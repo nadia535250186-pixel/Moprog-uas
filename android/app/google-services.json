@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "353333564137",
+    "project_id": "lingualearn-10369",
+    "storage_bucket": "lingualearn-10369.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:353333564137:android:fa81e61a4390316c241678",
+        "android_client_info": {
+          "package_name": "com.example.uas_moprog"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDH5bevF_HHglfy8Tz4aO7jPVyfMGoFjqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
