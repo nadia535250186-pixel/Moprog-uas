@@ -90,7 +90,7 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             LinearProgressIndicator(
               value: (currQuestion + 1) / questions.length,
@@ -154,22 +154,23 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
                     ],
                 ),
               ),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: selectedAnswer == null ? null : isChecked ? nextQuestion : checkAnswer,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF58CC02),
-                  foregroundColor: Colors.white,
-                  disabledBackgroundColor: Colors.grey.shade400,
-                  disabledForegroundColor: Colors.white,
-                ),
-                child: Text(isChecked ? 'Lanjut' : 'Periksa Jawaban')
-              ),
-            ),
           ],
         ) 
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(20),
+        child: SizedBox(
+          width: double.infinity,
+          height: 50,
+          child: ElevatedButton(
+            onPressed: selectedAnswer == null ? null : isChecked ? nextQuestion : checkAnswer,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF58CC02),
+              foregroundColor: Colors.white,
+            ),
+            child: Text(isChecked ? 'Lanjut' : 'Periksa Jawaban')
+          ),
+        ),
       ),
     );
   }

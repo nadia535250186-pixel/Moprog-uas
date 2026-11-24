@@ -103,7 +103,7 @@ class _MultipleChoicePageState extends State<MultipleChoicePage> {
           const SizedBox(height: 12),
           LinearProgressIndicator(
             value: (currQuestion + 1) / questions.length,
-            color: Colors.lightBlueAccent,
+            color: Colors.lightGreenAccent,
             backgroundColor: Colors.grey.shade300,
           ),
           const SizedBox(height: 32),

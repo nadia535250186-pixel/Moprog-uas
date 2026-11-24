@@ -97,6 +97,12 @@ class _CompleteSentencePageState extends State<CompleteSentencePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            LinearProgressIndicator(
+              value: (currQuestion + 1) / questions.length,
+              backgroundColor: Colors.grey.shade400,
+              color: Colors.lightGreenAccent,
+            ),
+            SizedBox(height: 30,),
             const Text(
               'Lengkapi kalimat berikut!',
               style: TextStyle(fontSize: 20),
