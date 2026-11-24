@@ -40,14 +40,31 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
       appBar: AppBar(
         title: const Text('Tebak Arti Kata'),
       ),
-      body: Center(
-        child: Text(
-          question.question,
-          style: const TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Apa arti kata berikut?', style: TextStyle(fontSize: 20),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              question.question,
+              style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 30),
+            ...question.options.map((option) {
+              return Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(bottom: 12),
+                child: OutlinedButton(
+                  onPressed: () {},
+                  child: Text(option),
+                ),
+              );
+            }),
+          ],
+        ) 
       ),
     );
   }
