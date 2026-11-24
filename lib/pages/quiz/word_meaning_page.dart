@@ -29,8 +29,21 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
       explanation: 'Expensive berarti Mahal.',
     ),
   ];
-
   int currQuestion = 0;
+  String? selectedAnswer;
+  bool isChecked = false;
+  int score = 0;
+
+  void checkAnswer() {
+    if (selectedAnswer == null) return;
+
+    setState(() {
+      isChecked = true;
+      if(questions[currQuestion].checkAnswer(selectedAnswer!)) {
+        score++;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,15 +67,67 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
             ),
             const SizedBox(height: 30),
             ...question.options.map((option) {
+              final IsSelected = selectedAnswer == option;
               return Container(
                 width: double.infinity,
                 margin: const EdgeInsets.only(bottom: 12),
                 child: OutlinedButton(
-                  onPressed: () {},
+                  onPressed: isChecked ? null : () {
+                    setState(() {
+                      selectedAnswer = option;
+                    });
+                    
+                  },
                   child: Text(option),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.all(15),
+                    backgroundColor: IsSelected ? const Color(0xFFDFF7D2) : Colors.white,
+                    side: BorderSide(color: IsSelected ? const Color(0xFF58CC02) : Colors.grey.shade400, width: 2)
+                  ),
                 ),
               );
             }),
+            const SizedBox(height: 20,),
+            if(isChecked)
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(20),
+                margin: const EdgeInsets.only(top: 20, bottom: 20),
+                decoration: BoxDecoration(
+                  color: questions[currQuestion].checkAnswer(selectedAnswer!) ? const Color(0xFFDFF7D2) : const Color(0xFFFFE0E0),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      questions[currQuestion].checkAnswer(selectedAnswer!) ? 'Jawaban Benar' : 'Jawaban Salah',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(question.explanation),
+                    if(!questions[currQuestion].checkAnswer(selectedAnswer!))
+                      Text('Jawaban benar: ${question.answer}')
+                    ],
+                ),
+              ),
+            SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton(
+                onPressed: selectedAnswer == null || isChecked ? null : checkAnswer,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF58CC02),
+                  foregroundColor: Colors.white,
+                  disabledBackgroundColor: Colors.grey.shade400,
+                  disabledForegroundColor: Colors.white,
+                ),
+                child: const Text('Periksa Jawaban')
+              ),
+            ),
           ],
         ) 
       ),
