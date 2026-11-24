@@ -45,6 +45,40 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
     });
   }
 
+  void nextQuestion() {
+    if(currQuestion < questions.length -1) {
+      setState(() {
+        currQuestion++;
+        selectedAnswer = null;
+        isChecked = false;
+      });
+    }
+    else {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => AlertDialog(
+          title: const Text('Latihan Selesai'),
+          content: Text('Skormu: $score dari ${questions.length}'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                currQuestion = 0;
+                selectedAnswer = null;
+                isChecked = false;
+                score = 0;
+              });
+              Navigator.pop(context);
+            },
+            child: const Text('Ulang Latihan')
+          ),
+        ],
+        ), 
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final question = questions[currQuestion];
@@ -58,6 +92,12 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            LinearProgressIndicator(
+              value: (currQuestion + 1) / questions.length,
+              backgroundColor: Colors.grey.shade400,
+              color: Colors.lightGreenAccent,
+            ),
+            SizedBox(height: 30,),
             const Text('Apa arti kata berikut?', style: TextStyle(fontSize: 20),
             ),
             const SizedBox(height: 20),
@@ -118,14 +158,14 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: selectedAnswer == null || isChecked ? null : checkAnswer,
+                onPressed: selectedAnswer == null ? null : isChecked ? nextQuestion : checkAnswer,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF58CC02),
                   foregroundColor: Colors.white,
                   disabledBackgroundColor: Colors.grey.shade400,
                   disabledForegroundColor: Colors.white,
                 ),
-                child: const Text('Periksa Jawaban')
+                child: Text(isChecked ? 'Lanjut' : 'Periksa Jawaban')
               ),
             ),
           ],
