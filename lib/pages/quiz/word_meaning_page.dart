@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/quiz_question.dart';
+import 'check_answer.dart';
 
 class WordMeaningPage extends StatefulWidget {
   const WordMeaningPage({super.key});
@@ -134,31 +135,13 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
             }),
             const SizedBox(height: 20,),
             if(isChecked)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                margin: const EdgeInsets.only(top: 20, bottom: 20),
-                decoration: BoxDecoration(
-                  color: questions[currQuestion].checkAnswer(selectedAnswer!) ? const Color(0xFFDFF7D2) : const Color(0xFFFFE0E0),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      questions[currQuestion].checkAnswer(selectedAnswer!) ? 'Jawaban Benar' : 'Jawaban Salah',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(question.explanation),
-                    if(!questions[currQuestion].checkAnswer(selectedAnswer!))
-                      Text('Jawaban benar: ${question.answer}')
-                    ],
-                ),
-              ),
+              CheckAnswer(
+              isChecked: isChecked,
+              isCorrect: questions[currQuestion].checkAnswer(selectedAnswer!),
+              correctAnswer: questions[currQuestion].answer,
+              explanation: questions[currQuestion].explanation,
+            ),
+            const SizedBox(height: 20),
           ],
         ) 
       ),

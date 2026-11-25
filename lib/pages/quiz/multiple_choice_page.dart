@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../models/quiz_question.dart';
+import 'check_answer.dart';
 
 class MultipleChoicePage extends StatefulWidget{
   const MultipleChoicePage({super.key});
@@ -95,7 +96,7 @@ class _MultipleChoicePageState extends State<MultipleChoicePage> {
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('Soal ${currQuestion + 1} dari ${questions.length}',
             style: const TextStyle(fontSize:16),
@@ -145,35 +146,15 @@ class _MultipleChoicePageState extends State<MultipleChoicePage> {
               ),
             );
         }),
-        const Spacer(),
+        const SizedBox(height: 10),
           if (isChecked)
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              margin: const EdgeInsets.only(bottom: 16),
-              decoration: BoxDecoration(
-                color: question.checkAnswer(selectedAnswer!)
-                    ? const Color(0xFFDFF7D2)
-                    : const Color(0xFFFFE0E0),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    question.checkAnswer(selectedAnswer!)
-                        ? 'Jawaban Benar!'
-                        : 'Jawaban Salah!',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(question.explanation),
-                ],
-              ),
+            CheckAnswer(
+              isChecked: isChecked,
+              isCorrect: questions[currQuestion].checkAnswer(selectedAnswer!),
+              correctAnswer: questions[currQuestion].answer,
+              explanation: questions[currQuestion].explanation,
             ),
+            const Spacer(),
           SizedBox(
             width: double.infinity,
             height: 52,
