@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../providers/quiz_provider.dart';
 import '../../models/quiz_question.dart';
 import 'check_answer.dart';
-import '../../models/quiz_result.dart';
 
 class MultipleChoicePage extends StatefulWidget{
   const MultipleChoicePage({super.key});
@@ -76,14 +77,12 @@ class _MultipleChoicePageState extends State<MultipleChoicePage> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(dialogContext);
-                  Navigator.pop(
-                    context,
-                    QuizResult(
-                      correctAnswers: score,
-                      wrongAnswers: questions.length - score,
-                      totalQuestions: questions.length
-                    ),
+                  Provider.of<QuizProvider>(context, listen:false).addResult(
+                    score,
+                    questions.length - score,
+                    questions.length,
                   );
+                  Navigator.pop(context);
                 },
                 child: const Text('Selesai'),
               ),

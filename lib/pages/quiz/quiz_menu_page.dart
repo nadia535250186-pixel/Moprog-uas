@@ -15,34 +15,15 @@ class QuizMenuPage extends StatefulWidget{
 }
 
 class QuizMenuPageState extends State<QuizMenuPage> {
-    int totalCorrect = 0;
-    int totalWrong = 0;
-    int totalQuestions = 0;
-
     Future<void> openQuiz(Widget page) async {
-      final result = await Navigator.push<QuizResult>(
+      await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => page),
-        );
-
-        if(result != null) {
-          setState(() {
-            totalCorrect += result.correctAnswers;
-            totalWrong += result.wrongAnswers;
-            totalQuestions += result.totalQuestions;
-          });
-        }
+      );
     }
 
     void returnResult() {
-      Navigator.pop(
-        context,
-        QuizResult(
-          correctAnswers: totalCorrect,
-          wrongAnswers: totalWrong,
-          totalQuestions: totalQuestions,
-          ),
-        );
+      Navigator.pop(context);
     }
 
   @override
