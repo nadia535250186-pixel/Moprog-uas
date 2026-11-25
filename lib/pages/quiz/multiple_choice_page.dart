@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/quiz_provider.dart';
 import '../../models/quiz_question.dart';
 import 'check_answer.dart';
+import '../../services/quiz_service.dart';
 
 class MultipleChoicePage extends StatefulWidget{
   const MultipleChoicePage({super.key});
@@ -12,30 +13,40 @@ class MultipleChoicePage extends StatefulWidget{
 }
 
 class _MultipleChoicePageState extends State<MultipleChoicePage> {
-  final List<QuizQuestion> questions = [
-    QuizQuestion(
-      question: 'What is the meaning of "I know"',
-      options: ['Aku tahu', 'Aku tidak tahu', 'Aku sekarang', 'Aku senang'],
-      answer: 'Aku tahu',
-      explanation: 'I know dalam bahasa indonesia berarti Aku tahu'
-    ),
-    QuizQuestion(
-      question: 'What is the meaning of Book', 
-      options: ['Meja', 'Kursi', 'Buku', 'Gelas'], 
-      answer: 'Buku', 
-      explanation: 'Book berarti buku dalam bahasa indonesia'
-      ),
-    QuizQuestion(
-      question: 'What is the meaning of "Water"?',
-      options: ['Api', 'Air', 'Angin', 'Tanah'],
-      answer: 'Air',
-      explanation: 'Water berarti Air dalam bahasa Indonesia.',
-    ),
-  ];
+  List<QuizQuestion> questions = [];
+  
+  bool isLoading = true;
   int currQuestion = 0;
   String? selectedAnswer;
   bool isChecked = false;
   int score = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadQuestions();
+  }
+
+  Future<void> loadQuestions() async {
+    try {
+      final data = await QuizService().getQuestions('multiple_choice');
+
+      print('Jumlah soal: ${data.length}');
+      print(data);
+
+      if(!mounted) return;
+
+      setState(() {
+        questions = data;
+        isLoading = false;
+      });
+    } catch(e) {
+      setState(() {
+        isLoading = false;
+      });
+      print(e);
+    }
+  }
 
   void checkAnswer() {
     if(selectedAnswer == null) return;
@@ -94,6 +105,20 @@ class _MultipleChoicePageState extends State<MultipleChoicePage> {
 
   @override
   Widget build(BuildContext context) {
+    if(isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+          ),
+      );
+    }
+    if(questions.isEmpty) {
+      return const Scaffold(
+        body: Center(
+          child: Text('Belum ada soal tersedia'),
+        ),
+      );
+    }
     final question = questions[currQuestion];
 
     return Scaffold(

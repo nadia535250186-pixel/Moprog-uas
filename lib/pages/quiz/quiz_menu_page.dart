@@ -3,7 +3,6 @@ import 'complete_sentence_page.dart';
 import 'multiple_choice_page.dart';
 import 'translate_sentence_page.dart';
 import 'word_meaning_page.dart';
-import '../../models/quiz_result.dart';
 
 class QuizMenuPage extends StatefulWidget{
   const QuizMenuPage({super.key});
