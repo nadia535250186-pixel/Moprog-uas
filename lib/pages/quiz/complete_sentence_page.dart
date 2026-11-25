@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/quiz_question.dart';
 import 'check_answer.dart';
+import '../../models/quiz_result.dart';
 
 class CompleteSentencePage extends StatefulWidget {
   const CompleteSentencePage({super.key});
@@ -56,13 +57,13 @@ class _CompleteSentencePageState extends State<CompleteSentencePage> {
     else {
       showDialog(
         context: context, 
-        builder: (context) => AlertDialog(
+        builder: (dialogContext) => AlertDialog(
           title: const Text('Latihan selesai'),
           content: Text('Skormu: $score/${questions.length}'),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
                 setState(() {
                   currQuestion = 0;
                   selectedAnswer = null;
@@ -74,8 +75,15 @@ class _CompleteSentencePageState extends State<CompleteSentencePage> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
-                  Navigator.pop(context);
+                  Navigator.pop(dialogContext);
+                  Navigator.pop(
+                    context,
+                    QuizResult(
+                      correctAnswers: score,
+                      wrongAnswers: questions.length - score,
+                      totalQuestions: questions.length
+                    ),
+                  );
                 },
                 child: const Text('Selesai'),
               ),

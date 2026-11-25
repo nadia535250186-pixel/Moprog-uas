@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'firebase_options.dart';
 import 'pages/splash_page.dart';
+import 'pages/quiz/quiz_menu_page.dart';
+import 'pages/quiz/multiple_choice_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -26,7 +28,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         scaffoldBackgroundColor: const Color(0xFFF7FFF5),
       ),
-      home: const SplashPage(),
+      home: const QuizMenuPage(),
     );
   }
 }

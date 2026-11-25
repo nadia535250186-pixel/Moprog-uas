@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/quiz_question.dart';
 import 'check_answer.dart';
+import '../../models/quiz_result.dart';
 
 class MultipleChoicePage extends StatefulWidget{
   const MultipleChoicePage({super.key});
@@ -56,13 +57,13 @@ class _MultipleChoicePageState extends State<MultipleChoicePage> {
     else {
       showDialog(
         context: context, 
-        builder: (context) => AlertDialog(
+        builder: (dialogContext) => AlertDialog(
           title: const Text('Latihan selesai'),
           content: Text('Skormu: $score/${questions.length}'),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
                 setState(() {
                   currQuestion = 0;
                   selectedAnswer = null;
@@ -75,7 +76,14 @@ class _MultipleChoicePageState extends State<MultipleChoicePage> {
               TextButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  Navigator.pop(context);
+                  Navigator.pop(
+                    context,
+                    QuizResult(
+                      correctAnswers: score,
+                      wrongAnswers: questions.length - score,
+                      totalQuestions: questions.length
+                    ),
+                  );
                 },
                 child: const Text('Selesai'),
               ),

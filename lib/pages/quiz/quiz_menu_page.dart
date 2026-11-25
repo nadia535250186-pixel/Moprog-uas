@@ -3,9 +3,36 @@ import 'complete_sentence_page.dart';
 import 'multiple_choice_page.dart';
 import 'translate_sentence_page.dart';
 import 'word_meaning_page.dart';
+import '../../models/quiz_result.dart';
 
-class QuizMenuPage extends StatelessWidget{
+class QuizMenuPage extends StatefulWidget{
   const QuizMenuPage({super.key});
+
+
+  @override
+  State<StatefulWidget> createState() => QuizMenuPageState();
+
+}
+
+class QuizMenuPageState extends State<QuizMenuPage> {
+    int totalCorrect = 0;
+    int totalWrong = 0;
+    int totalQuestions = 0;
+
+    Future<void> openQuiz(Widget page) async {
+      final result = await Navigator.push<QuizResult>(
+        context,
+        MaterialPageRoute(builder: (context) => page),
+        );
+
+        if(result != null) {
+          setState(() {
+            totalCorrect += result.correctAnswers;
+            totalWrong += result.wrongAnswers;
+            totalQuestions += result.totalQuestions;
+          });
+        }
+    }
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +53,7 @@ class QuizMenuPage extends StatelessWidget{
         ),),
     );
   }
-
-  
-}
+  }
 
 Widget buildMenu(BuildContext context, String title, Widget page) {
   return Container(

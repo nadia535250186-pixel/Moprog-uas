@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../models/quiz_question.dart';
 import 'check_answer.dart';
+import '../../models/quiz_result.dart';
 
 class TranslateSentencePage extends StatefulWidget {
   const TranslateSentencePage({super.key});
@@ -61,7 +62,7 @@ class _TranslateSentencePageState extends State<TranslateSentencePage> {
       showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => AlertDialog(
+        builder: (dialogContext) => AlertDialog(
           title: const Text('Latihan Selesai'),
           content: Text('Skormu: $score dari ${questions.length}'),
           actions: [
@@ -74,14 +75,21 @@ class _TranslateSentencePageState extends State<TranslateSentencePage> {
                   isCorrect = false;
                   score = 0;
                 });
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
               },
               child: const Text('Ulang Latihan'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(context);
-                Navigator.pop(context);
+                Navigator.pop(dialogContext);
+                Navigator.pop(
+                    context,
+                    QuizResult(
+                      correctAnswers: score,
+                      wrongAnswers: questions.length - score,
+                      totalQuestions: questions.length
+                    ),
+                  );
               }, child: Text('Selesai')),
           ],
         ),
