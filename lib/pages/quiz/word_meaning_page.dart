@@ -73,6 +73,11 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
             },
             child: const Text('Ulang Latihan')
           ),
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              }, child: Text('Selesai')),
         ],
         ), 
       );
