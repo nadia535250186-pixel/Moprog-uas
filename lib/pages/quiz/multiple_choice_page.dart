@@ -75,7 +75,7 @@ class _MultipleChoicePageState extends State<MultipleChoicePage> {
               ),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pop(dialogContext);
                   Navigator.pop(
                     context,
                     QuizResult(
