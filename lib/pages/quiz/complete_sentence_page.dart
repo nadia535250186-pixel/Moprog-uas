@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/quiz_provider.dart';
 import '../../models/quiz_question.dart';
 import 'check_answer.dart';
+import '../../services/quiz_service.dart';
 
 class CompleteSentencePage extends StatefulWidget {
   const CompleteSentencePage({super.key});
@@ -12,31 +13,40 @@ class CompleteSentencePage extends StatefulWidget {
 }
 
 class _CompleteSentencePageState extends State<CompleteSentencePage> {
-  final List<QuizQuestion> questions = [
-    QuizQuestion(
-      question: 'I ___ a student.',
-      options: ['am', 'is', 'are', 'be'],
-      answer: 'am',
-      explanation: 'I menggunakan to be am.',
-    ),
-    QuizQuestion(
-      question: 'She ___ to school.',
-      options: ['go', 'going', 'goes', 'gone'],
-      answer: 'goes',
-      explanation: 'She menggunakan kata kerja goes.',
-    ),
-    QuizQuestion(
-      question: 'They are ___ football.',
-      options: ['play', 'plays', 'playing', 'played'],
-      answer: 'playing',
-      explanation: 'They are menggunakan kata kerja playing.',
-    ),
-  ];
-
+  List<QuizQuestion> questions = [];
+  bool isLoading = true;
   int currQuestion = 0;
   String? selectedAnswer;
   bool isChecked = false;
   int score = 0;
+
+   @override
+  void initState() {
+    super.initState();
+    loadQuestions();
+  }
+  
+  Future<void> loadQuestions() async {
+    try {
+      final data = await QuizService().getQuestions('complete_sentence');
+
+      print('Jumlah soal: ${data.length}');
+      print(data);
+
+      if(!mounted) return;
+
+      setState(() {
+        questions = data;
+        isLoading = false;
+      });
+    } catch(e) {
+      if(!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+      print(e);
+    }
+  }
 
   void checkAnswer() {
     if(selectedAnswer == null) return;
@@ -94,6 +104,17 @@ class _CompleteSentencePageState extends State<CompleteSentencePage> {
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (questions.isEmpty) {
+      return const Scaffold(
+        body: Center(child: Text('Belum ada soal tersedia')),
+      );
+    }
     final question = questions[currQuestion];
 
     return Scaffold(
