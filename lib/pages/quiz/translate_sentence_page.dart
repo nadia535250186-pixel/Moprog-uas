@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/quiz_provider.dart';
 import '../../models/quiz_question.dart';
 import 'check_answer.dart';
+import '../../services/quiz_service.dart';
 
 class TranslateSentencePage extends StatefulWidget {
   const TranslateSentencePage({super.key});
@@ -12,31 +13,41 @@ class TranslateSentencePage extends StatefulWidget {
 }
 
 class _TranslateSentencePageState extends State<TranslateSentencePage> {
-  final List<QuizQuestion> questions = [
-    QuizQuestion(
-      question: 'I go to school every morning',
-      options: [],
-      answer: 'Saya pergi ke sekolah setiap pagi',
-      explanation: 'I go to school every morning berarti Saya pergi ke sekolah setiap pagi.',
-    ),
-    QuizQuestion(
-      question: 'She is reading a book',
-      options: [],
-      answer: 'Dia sedang membaca buku',
-      explanation: 'She is reading a book berarti Dia sedang membaca buku.',
-    ),
-    QuizQuestion(
-      question: 'They are playing football',
-      options: [],
-      answer: 'Mereka sedang bermain sepak bola',
-      explanation: 'They are playing football berarti Mereka sedang bermain sepak bola.',
-    ),
-  ];
+  List<QuizQuestion> questions = [];
+  bool isLoading = true;
   final TextEditingController answerController = TextEditingController();
   int currQuestion = 0;
   bool isChecked = false;
   bool isCorrect = false;
   int score = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    loadQuestions();
+  }
+
+  Future<void> loadQuestions() async {
+    try {
+      final data = await QuizService().getQuestions('translate_sentence');
+
+      print('Jumlah soal: ${data.length}');
+      print(data);
+
+      if(!mounted) return;
+
+      setState(() {
+        questions = data;
+        isLoading = false;
+      });
+    } catch(e) {
+      if(!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+      print(e);
+    }
+  }
 
   void checkAnswer() {
     if (answerController.text.trim().isEmpty) return;
@@ -104,6 +115,20 @@ class _TranslateSentencePageState extends State<TranslateSentencePage> {
 
   @override
   Widget build(BuildContext context) {
+    if(isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+          ),
+      );
+    }
+    if(questions.isEmpty) {
+      return const Scaffold(
+        body: Center(
+          child: Text('Belum ada soal tersedia'),
+        ),
+      );
+    }
     final question = questions[currQuestion];
 
     return Scaffold(
