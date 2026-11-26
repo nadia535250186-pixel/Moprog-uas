@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../providers/quiz_provider.dart';
 import '../../models/quiz_question.dart';
 import 'check_answer.dart';
+import '../../services/quiz_service.dart';
 
 class WordMeaningPage extends StatefulWidget {
   const WordMeaningPage({super.key});
@@ -12,36 +13,55 @@ class WordMeaningPage extends StatefulWidget {
 }
 
 class _WordMeaningPageState extends State<WordMeaningPage> {
-  final List<QuizQuestion> questions = [
-    QuizQuestion(
-      question: 'Beautiful',
-      options: ['Cantik', 'Jelek', 'Besar', 'Kecil'],
-      answer: 'Cantik',
-      explanation: 'Beautiful berarti Cantik atau Indah.',
-    ),
-    QuizQuestion(
-      question: 'Hungry',
-      options: ['Haus', 'Lapar', 'Kenyang', 'Mengantuk'],
-      answer: 'Lapar',
-      explanation: 'Hungry berarti Lapar.',
-    ),
-    QuizQuestion(
-      question: 'Expensive',
-      options: ['Murah', 'Mudah', 'Mahal', 'Sulit'],
-      answer: 'Mahal',
-      explanation: 'Expensive berarti Mahal.',
-    ),
-  ];
+  final TextEditingController answerController = TextEditingController();
+  List<QuizQuestion> questions = [];
+  bool isLoading = true;
   int currQuestion = 0;
   String? selectedAnswer;
   bool isChecked = false;
   int score = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    loadQuestions();
+  }
+
+  @override
+  void dispose() {
+    answerController.dispose();
+    super.dispose();
+  }
+
+  Future<void> loadQuestions() async {
+    try {
+      final data = await QuizService().getQuestions('word_meaning');
+
+      print('Jumlah soal: ${data.length}');
+      print(data);
+
+      if(!mounted) return;
+
+      setState(() {
+        questions = data;
+        isLoading = false;
+      });
+    } catch(e) {
+      if(!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+      print(e);
+    }
+  }
+
   void checkAnswer() {
-    if (selectedAnswer == null) return;
+    if (answerController.text.trim().isEmpty) return;
 
     setState(() {
       isChecked = true;
+      selectedAnswer = answerController.text.trim();
+
       if(questions[currQuestion].checkAnswer(selectedAnswer!)) {
         score++;
       }
@@ -53,6 +73,7 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
       setState(() {
         currQuestion++;
         selectedAnswer = null;
+        answerController.clear();
         isChecked = false;
       });
     }
@@ -71,6 +92,7 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
                 selectedAnswer = null;
                 isChecked = false;
                 score = 0;
+                answerController.clear();
               });
               Navigator.pop(dialogContext);
             },
@@ -94,6 +116,20 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
 
   @override
   Widget build(BuildContext context) {
+    if(isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+          ),
+      );
+    }
+    if(questions.isEmpty) {
+      return const Scaffold(
+        body: Center(
+          child: Text('Belum ada soal tersedia'),
+        ),
+      );
+    }
     final question = questions[currQuestion];
 
     return Scaffold(
@@ -119,27 +155,17 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
               style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 30),
-            ...question.options.map((option) {
-              final IsSelected = selectedAnswer == option;
-              return Container(
-                width: double.infinity,
-                margin: const EdgeInsets.only(bottom: 12),
-                child: OutlinedButton(
-                  onPressed: isChecked ? null : () {
-                    setState(() {
-                      selectedAnswer = option;
-                    });
-                    
-                  },
-                  child: Text(option),
-                  style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.all(15),
-                    backgroundColor: IsSelected ? const Color(0xFFDFF7D2) : Colors.white,
-                    side: BorderSide(color: IsSelected ? const Color(0xFF58CC02) : Colors.grey.shade400, width: 2)
-                  ),
-                ),
-              );
-            }),
+            TextField(
+              onChanged: (value) {
+                setState(() {});
+              },
+              controller: answerController,
+              enabled: !isChecked,
+              decoration: const InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Ketik di sini...',
+              ),
+            ),
             const SizedBox(height: 20,),
             if(isChecked)
               CheckAnswer(
@@ -158,11 +184,11 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
           width: double.infinity,
           height: 50,
           child: ElevatedButton(
-            onPressed: selectedAnswer == null ? null : isChecked ? nextQuestion : checkAnswer,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF58CC02),
-              foregroundColor: Colors.white,
-            ),
+            onPressed: isChecked ? nextQuestion : answerController.text.trim().isEmpty ? null : checkAnswer,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF58CC02),
+                foregroundColor: Colors.white,
+              ),
             child: Text(isChecked ? 'Lanjut' : 'Periksa Jawaban')
           ),
         ),
