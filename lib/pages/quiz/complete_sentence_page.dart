@@ -4,6 +4,7 @@ import '../../providers/quiz_provider.dart';
 import '../../models/quiz_question.dart';
 import 'check_answer.dart';
 import '../../services/quiz_service.dart';
+import '../../services/audio_service.dart';
 
 class CompleteSentencePage extends StatefulWidget {
   const CompleteSentencePage({super.key});
@@ -24,6 +25,7 @@ class _CompleteSentencePageState extends State<CompleteSentencePage> {
   void initState() {
     super.initState();
     loadQuestions();
+    AudioService.playBackground();
   }
   
   Future<void> loadQuestions() async {
@@ -54,6 +56,10 @@ class _CompleteSentencePageState extends State<CompleteSentencePage> {
       isChecked = true;
       if(questions[currQuestion].checkAnswer(selectedAnswer!)) {
         score++;
+        AudioService.playCorrect();
+      }
+      else {
+        AudioService.playWrong();
       }
     });
   }
@@ -100,6 +106,11 @@ class _CompleteSentencePageState extends State<CompleteSentencePage> {
         ),
       );
     }
+  }
+  @override
+  void dispose() {
+    AudioService.stopBackground();
+    super.dispose();
   }
 
   @override

@@ -4,6 +4,7 @@ import '../../providers/quiz_provider.dart';
 import '../../models/quiz_question.dart';
 import 'check_answer.dart';
 import '../../services/quiz_service.dart';
+import '../../services/audio_service.dart';
 
 class WordMeaningPage extends StatefulWidget {
   const WordMeaningPage({super.key});
@@ -25,11 +26,13 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
   void initState() {
     super.initState();
     loadQuestions();
+    AudioService.playBackground();
   }
 
   @override
   void dispose() {
     answerController.dispose();
+    AudioService.stopBackground();
     super.dispose();
   }
 
@@ -64,6 +67,10 @@ class _WordMeaningPageState extends State<WordMeaningPage> {
 
       if(questions[currQuestion].checkAnswer(selectedAnswer!)) {
         score++;
+        AudioService.playCorrect();
+      }
+      else {
+        AudioService.playWrong();
       }
     });
   }

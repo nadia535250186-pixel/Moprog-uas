@@ -4,6 +4,7 @@ import '../../providers/quiz_provider.dart';
 import '../../models/quiz_question.dart';
 import 'check_answer.dart';
 import '../../services/quiz_service.dart';
+import '../../services/audio_service.dart';
 
 class MultipleChoicePage extends StatefulWidget{
   const MultipleChoicePage({super.key});
@@ -25,6 +26,7 @@ class _MultipleChoicePageState extends State<MultipleChoicePage> {
   void initState() {
     super.initState();
     loadQuestions();
+    AudioService.playBackground();
   }
 
   Future<void> loadQuestions() async {
@@ -54,6 +56,10 @@ class _MultipleChoicePageState extends State<MultipleChoicePage> {
       isChecked = true;
       if(questions[currQuestion].checkAnswer(selectedAnswer!)) {
         score++;
+        AudioService.playCorrect();
+      }
+      else {
+        AudioService.playWrong();
       }
     });
   }
@@ -101,6 +107,12 @@ class _MultipleChoicePageState extends State<MultipleChoicePage> {
         ),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    AudioService.stopBackground();
+    super.dispose();
   }
 
   @override

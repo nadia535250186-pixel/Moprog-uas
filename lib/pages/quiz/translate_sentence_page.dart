@@ -4,6 +4,7 @@ import '../../providers/quiz_provider.dart';
 import '../../models/quiz_question.dart';
 import 'check_answer.dart';
 import '../../services/quiz_service.dart';
+import '../../services/audio_service.dart';
 
 class TranslateSentencePage extends StatefulWidget {
   const TranslateSentencePage({super.key});
@@ -25,6 +26,7 @@ class _TranslateSentencePageState extends State<TranslateSentencePage> {
   void initState() {
     super.initState();
     loadQuestions();
+    AudioService.playBackground();
   }
 
   Future<void> loadQuestions() async {
@@ -58,6 +60,10 @@ class _TranslateSentencePageState extends State<TranslateSentencePage> {
 
       if(isCorrect) {
         score++;
+        AudioService.playCorrect();
+      }
+      else {
+        AudioService.playWrong();
       }
     });
   }
@@ -110,6 +116,7 @@ class _TranslateSentencePageState extends State<TranslateSentencePage> {
   @override
   void dispose() {
     answerController.dispose();
+    AudioService.stopBackground();
     super.dispose();
   }
 
